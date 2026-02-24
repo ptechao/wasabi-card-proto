@@ -1,0 +1,25 @@
+# Project TODO
+
+- [x] 設計資料庫 Schema（KYC、卡片、交易、Webhook 事件、3DS 驗證碼）
+- [x] 建立 WasabiCard API 代理工具（簽名、請求、錯誤處理）
+- [x] 後端 tRPC Router：KYC 申請與狀態查詢
+- [x] 後端 tRPC Router：卡片管理（開卡、凍結、解凍、餘額查詢）
+- [x] 後端 tRPC Router：卡片充值（USDT 入金）
+- [x] 後端 tRPC Router：交易記錄查詢
+- [x] 後端 tRPC Router：ATM 提領管理
+- [x] 後端 tRPC Router：商戶主錢包餘額查詢
+- [x] Webhook Express 路由（卡片交易、授權交易、3DS、KYC 狀態）
+- [x] 3DS 驗證碼接收與前端推送邏輯
+- [x] 前端：深色主題與全局樣式設定
+- [x] 前端：DashboardLayout 側邊欄導航配置
+- [x] 前端：Dashboard 首頁（餘額總覽、快捷操作）
+- [x] 前端：KYC 申請頁面（表單、證件上傳、狀態追蹤）
+- [x] 前端：卡片管理頁面（卡片列表、開卡、凍結/解凍）
+- [x] 前端：充值頁面（USDT 入金地址、充值記錄）
+- [x] 前端：交易記錄頁面（消費、退款、手續費明細）
+- [x] 前端：ATM 提領管理頁面（提領申請、激活碼、狀態追蹤）
+- [x] 撰寫 Vitest 測試
+- [ ] 環境變數配置（WASABI_API_KEY、WASABI_API_URL 等）— 需用戶提供 API 密鑰
+- [x] 建立 WasabiCard API 模擬層（Mock Service）
+- [x] 修正後端 routers 使用模擬層，確保所有功能可完整運作
+- [x] 前端展示模擬數據驗證所有頁面正常
