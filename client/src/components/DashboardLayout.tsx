@@ -32,6 +32,7 @@ import {
   LogOut,
   PanelLeft,
   Globe,
+  Settings,
 } from "lucide-react";
 import { CSSProperties, useEffect, useRef, useState } from "react";
 import { useLocation } from "wouter";

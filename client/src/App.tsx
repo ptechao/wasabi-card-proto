@@ -12,6 +12,7 @@ import RechargePage from "./pages/RechargePage";
 import TransactionsPage from "./pages/TransactionsPage";
 import AtmPage from "./pages/AtmPage";
 import RegisterPage from "./pages/RegisterPage";
+import AdminDashboard from "./pages/AdminDashboard";
 
 function Router() {
   return (
@@ -32,6 +33,7 @@ function DashboardRouter() {
         <Route path="/recharge" component={RechargePage} />
         <Route path="/transactions" component={TransactionsPage} />
         <Route path="/atm" component={AtmPage} />
+        <Route path="/admin" component={AdminDashboard} />
         <Route path="/404" component={NotFound} />
         <Route component={NotFound} />
       </Switch>

@@ -6,6 +6,7 @@ import { z } from "zod";
 import { TRPCError } from "@trpc/server";
 import * as db from "./db";
 import * as wasabi from "./wasabiClient";
+import { adminRouter } from "./routers/admin";
 
 export const appRouter = router({
   system: systemRouter,
@@ -459,6 +460,8 @@ export const appRouter = router({
       };
     }),
   }),
+
+  admin: adminRouter,
 });
 
 export type AppRouter = typeof appRouter;

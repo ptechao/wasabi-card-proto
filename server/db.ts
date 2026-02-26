@@ -261,3 +261,79 @@ export async function getUserDashboardSummary(userId: number) {
     recentTransactions: recentTxResult,
   };
 }
+
+// ============================================================
+// Admin helpers - KYC Management
+// ============================================================
+export async function getAllKycRecords(status?: string, page: number = 1, pageSize: number = 20) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  const offset = (page - 1) * pageSize;
+  
+  let whereCondition = undefined;
+  if (status) {
+    whereCondition = eq(kycRecords.status, status as any);
+  }
+  
+  const records = await db.select().from(kycRecords)
+    .where(whereCondition)
+    .orderBy(desc(kycRecords.createdAt))
+    .limit(pageSize)
+    .offset(offset);
+  
+  const countResult = await db.select({ count: sql<number>`count(*)` })
+    .from(kycRecords)
+    .where(whereCondition);
+  
+  return { records, total: countResult[0]?.count || 0 };
+}
+
+export async function getKycRecordById(id: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  const result = await db.select().from(kycRecords).where(eq(kycRecords.id, id)).limit(1);
+  return result[0] || null;
+}
+
+export async function approveKyc(id: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  await db.update(kycRecords).set({ status: "approved", rejectReason: null }).where(eq(kycRecords.id, id));
+}
+
+export async function rejectKyc(id: number, reason: string) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  await db.update(kycRecords).set({ status: "rejected", rejectReason: reason }).where(eq(kycRecords.id, id));
+}
+
+// ============================================================
+// Admin helpers - User Management
+// ============================================================
+export async function getAllUsers(page: number = 1, pageSize: number = 20) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  const offset = (page - 1) * pageSize;
+  
+  const records = await db.select().from(users)
+    .orderBy(desc(users.createdAt))
+    .limit(pageSize)
+    .offset(offset);
+  
+  const countResult = await db.select({ count: sql<number>`count(*)` }).from(users);
+  
+  return { records, total: countResult[0]?.count || 0 };
+}
+
+export async function getUserById(id: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  const result = await db.select().from(users).where(eq(users.id, id)).limit(1);
+  return result[0] || null;
+}
+
+export async function getUserKycHistory(userId: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  return db.select().from(kycRecords).where(eq(kycRecords.userId, userId)).orderBy(desc(kycRecords.createdAt));
+}
