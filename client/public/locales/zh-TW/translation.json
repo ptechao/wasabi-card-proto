@@ -1,0 +1,174 @@
+{
+  "common": {
+    "login": "登入",
+    "logout": "登出",
+    "loading": "載入中...",
+    "error": "錯誤",
+    "success": "成功",
+    "cancel": "取消",
+    "confirm": "確認",
+    "save": "儲存",
+    "delete": "刪除",
+    "edit": "編輯",
+    "copy": "複製",
+    "copied": "已複製到剪貼簿",
+    "back": "返回"
+  },
+  "navigation": {
+    "dashboard": "總覽",
+    "kyc": "KYC 認證",
+    "cards": "卡片管理",
+    "recharge": "充值",
+    "transactions": "交易記錄",
+    "atm": "ATM 提領"
+  },
+  "dashboard": {
+    "title": "歡迎回來",
+    "subtitle": "管理您的虛擬卡片與資金",
+    "totalBalance": "總餘額",
+    "activeCards": "活躍卡片",
+    "kycStatus": "KYC 狀態",
+    "frozenCards": "凍結卡片",
+    "recentTransactions": "最近交易",
+    "viewAll": "查看全部",
+    "noTransactions": "暫無交易記錄"
+  },
+  "kyc": {
+    "title": "KYC 身份認證",
+    "subtitle": "請填寫您的個人資料以完成身份認證",
+    "status": {
+      "none": "未申請",
+      "pending": "待提交",
+      "submitted": "審核中",
+      "approved": "已通過",
+      "rejected": "已拒絕"
+    },
+    "form": {
+      "firstName": "名字 (First Name)",
+      "lastName": "姓氏 (Last Name)",
+      "dob": "出生日期",
+      "nationality": "國籍",
+      "mobileAreaCode": "手機區號",
+      "mobilePhone": "手機號碼",
+      "email": "Email",
+      "address": "地址",
+      "city": "城市",
+      "state": "州/省",
+      "postalCode": "郵遞區號",
+      "idType": "證件類型",
+      "idNumber": "證件號碼",
+      "personalInfo": "個人資料",
+      "addressInfo": "地址資訊",
+      "idInfo": "證件資訊",
+      "required": "所有標記 * 的欄位為必填",
+      "submit": "提交 KYC 申請",
+      "submitting": "提交中..."
+    }
+  },
+  "cards": {
+    "title": "卡片管理",
+    "subtitle": "管理您的虛擬卡片",
+    "issue": "開卡",
+    "issueNew": "申請新卡片",
+    "selectCardType": "選擇卡片類型",
+    "initialAmount": "初始充值金額 (USD)",
+    "accountId": "扣款帳戶 ID",
+    "confirm": "確認開卡",
+    "confirming": "處理中...",
+    "freeze": "凍結",
+    "unfreeze": "解凍",
+    "cardInfo": "卡片資訊",
+    "hide": "隱藏",
+    "show": "顯示",
+    "availableBalance": "可用餘額",
+    "cardType": "類型",
+    "cardNumber": "卡號",
+    "cvv": "CVV",
+    "expireDate": "有效期",
+    "noCards": "您尚未擁有任何卡片",
+    "issueCard": "點擊「開卡」按鈕申請您的第一張虛擬卡",
+    "status": {
+      "pending": "處理中",
+      "active": "活躍",
+      "frozen": "已凍結",
+      "cancelled": "已註銷"
+    }
+  },
+  "recharge": {
+    "title": "充值",
+    "subtitle": "為您的卡片充值",
+    "depositAddress": "入金地址",
+    "chain": "區塊鏈",
+    "amount": "金額",
+    "getAddress": "獲取地址",
+    "copy": "複製",
+    "rechargeHistory": "充值記錄",
+    "selectCard": "選擇卡片",
+    "rechargeAmount": "充值金額",
+    "rechargeCard": "充值卡片",
+    "recharging": "充值中...",
+    "noHistory": "暫無充值記錄"
+  },
+  "transactions": {
+    "title": "交易記錄",
+    "subtitle": "查看您的交易明細",
+    "type": {
+      "deposit": "充值",
+      "withdrawal": "提領",
+      "purchase": "消費",
+      "refund": "退款",
+      "fee": "手續費",
+      "create": "開卡"
+    },
+    "status": {
+      "pending": "待處理",
+      "success": "成功",
+      "failed": "失敗"
+    },
+    "time": "時間",
+    "orderNo": "訂單號",
+    "amount": "金額",
+    "fee": "手續費",
+    "status": "狀態",
+    "description": "描述",
+    "noTransactions": "暫無交易記錄"
+  },
+  "atm": {
+    "title": "ATM 提領管理",
+    "subtitle": "查看和管理您的 ATM 提領激活碼",
+    "info": "提領激活碼說明",
+    "infoText": [
+      "激活碼是您在 ATM 機器上提領現金時所需的密碼",
+      "每次提領申請系統會自動生成一個激活碼",
+      "激活碼通常在提領申請提交後 24 小時內生成",
+      "點擊複製按鈕可快速複製激活碼到剪貼簿"
+    ],
+    "requestTime": "申請時間",
+    "orderNo": "訂單號",
+    "amount": "金額",
+    "activationCode": "激活碼",
+    "status": "狀態",
+    "show": "顯示",
+    "hide": "隱藏",
+    "pending": "待生成",
+    "noRecords": "暫無提領記錄",
+    "noRecordsDesc": "您的 ATM 提領申請將在此顯示",
+    "status": {
+      "pending": "待處理",
+      "processing": "處理中",
+      "completed": "已完成",
+      "failed": "失敗"
+    }
+  },
+  "errors": {
+    "required": "此欄位為必填",
+    "invalidEmail": "請輸入有效的 Email",
+    "invalidDate": "請輸入有效的日期",
+    "invalidAmount": "請輸入有效的金額",
+    "selectCard": "請選擇卡片",
+    "kycNotApproved": "請先完成 KYC 認證",
+    "cardNotActive": "卡片尚未激活",
+    "insufficientBalance": "餘額不足",
+    "networkError": "網路錯誤，請稍後重試"
+  }
+}

@@ -4,10 +4,9 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Landmark, Plus, Copy, ChevronLeft, ChevronRight } from "lucide-react";
+import { Landmark, Copy, ChevronLeft, ChevronRight, Eye, EyeOff } from "lucide-react";
 import { useState, useMemo } from "react";
 import { toast } from "sonner";
 
@@ -24,42 +23,13 @@ export default function AtmPage() {
   const queryInput = useMemo(() => ({ page, pageSize }), [page, pageSize]);
 
   const { data, isLoading } = trpc.atm.list.useQuery(queryInput);
-  const { data: cards } = trpc.cards.list.useQuery();
-  const requestMutation = trpc.atm.requestWithdrawal.useMutation();
   const utils = trpc.useUtils();
 
-  const [dialogOpen, setDialogOpen] = useState(false);
-  const [selectedCardId, setSelectedCardId] = useState<string>("");
-  const [amount, setAmount] = useState<number>(0);
-
-  const activeCards = useMemo(
-    () => (cards || []).filter((c) => c.status === "active"),
-    [cards]
-  );
+  const [showCode, setShowCode] = useState<Record<number, boolean>>({});
 
   const withdrawals = data?.records || [];
   const total = data?.total || 0;
   const totalPages = Math.ceil(total / pageSize);
-
-  const handleRequest = async () => {
-    if (!selectedCardId || amount <= 0) {
-      toast.error("請選擇卡片並輸入提領金額");
-      return;
-    }
-    try {
-      await requestMutation.mutateAsync({
-        cardId: Number(selectedCardId),
-        amount,
-      });
-      toast.success("ATM 提領申請已提交");
-      setDialogOpen(false);
-      setSelectedCardId("");
-      setAmount(0);
-      utils.atm.list.invalidate();
-    } catch (e) {
-      toast.error(`提領申請失敗: ${(e as Error).message}`);
-    }
-  };
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
@@ -77,73 +47,44 @@ export default function AtmPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight flex items-center gap-2">
-            <Landmark className="h-6 w-6 text-primary" />
-            ATM 提領
-          </h1>
-          <p className="text-muted-foreground mt-1">管理您的 ATM 提領申請</p>
-        </div>
-        <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-          <DialogTrigger asChild>
-            <Button>
-              <Plus className="h-4 w-4 mr-2" />
-              申請提領
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="bg-card">
-            <DialogHeader>
-              <DialogTitle>ATM 提領申請</DialogTitle>
-              <DialogDescription>選擇卡片並輸入提領金額</DialogDescription>
-            </DialogHeader>
-            <div className="space-y-4 pt-4">
-              <div className="space-y-2">
-                <Label>選擇卡片</Label>
-                <Select value={selectedCardId} onValueChange={setSelectedCardId}>
-                  <SelectTrigger><SelectValue placeholder="選擇卡片" /></SelectTrigger>
-                  <SelectContent>
-                    {activeCards.length > 0 ? (
-                      activeCards.map((c) => (
-                        <SelectItem key={c.id} value={String(c.id)}>
-                          •••• {c.cardLast4 || "****"} — ${c.availableBalance || "0.00"}
-                        </SelectItem>
-                      ))
-                    ) : (
-                      <SelectItem value="none" disabled>暫無可用卡片</SelectItem>
-                    )}
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="space-y-2">
-                <Label>提領金額 (USD)</Label>
-                <Input type="number" min={1} placeholder="100" value={amount || ""} onChange={(e) => setAmount(Number(e.target.value))} />
-              </div>
-              <Button className="w-full" onClick={handleRequest} disabled={requestMutation.isPending}>
-                {requestMutation.isPending ? "提交中..." : "確認提領"}
-              </Button>
-            </div>
-          </DialogContent>
-        </Dialog>
+      <div>
+        <h1 className="text-2xl font-bold tracking-tight flex items-center gap-2">
+          <Landmark className="h-6 w-6 text-primary" />
+          ATM 提領管理
+        </h1>
+        <p className="text-muted-foreground mt-1">查看和管理您的 ATM 提領激活碼</p>
       </div>
 
+      {/* 提領密碼說明卡片 */}
+      <Card className="bg-blue-500/10 border-blue-500/20">
+        <CardHeader>
+          <CardTitle className="text-base">提領激活碼說明</CardTitle>
+        </CardHeader>
+        <CardContent className="text-sm text-muted-foreground space-y-2">
+          <p>• 激活碼是您在 ATM 機器上提領現金時所需的密碼</p>
+          <p>• 每次提領申請系統會自動生成一個激活碼</p>
+          <p>• 激活碼通常在提領申請提交後 24 小時內生成</p>
+          <p>• 點擊複製按鈕可快速複製激活碼到剪貼簿</p>
+        </CardContent>
+      </Card>
+
+      {/* 提領記錄表格 */}
       <Card className="bg-card">
         <CardContent className="p-0">
           {withdrawals.length === 0 ? (
             <div className="text-center py-16">
               <Landmark className="h-12 w-12 mx-auto mb-4 text-muted-foreground/30" />
               <p className="text-muted-foreground">暫無提領記錄</p>
-              <p className="text-sm text-muted-foreground mt-1">點擊「申請提領」開始</p>
+              <p className="text-sm text-muted-foreground mt-1">您的 ATM 提領申請將在此顯示</p>
             </div>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
                   <tr className="border-b border-border/50">
-                    <th className="text-left p-4 text-sm font-medium text-muted-foreground">時間</th>
+                    <th className="text-left p-4 text-sm font-medium text-muted-foreground">申請時間</th>
                     <th className="text-left p-4 text-sm font-medium text-muted-foreground">訂單號</th>
                     <th className="text-right p-4 text-sm font-medium text-muted-foreground">金額</th>
-                    <th className="text-right p-4 text-sm font-medium text-muted-foreground">手續費</th>
                     <th className="text-center p-4 text-sm font-medium text-muted-foreground">激活碼</th>
                     <th className="text-center p-4 text-sm font-medium text-muted-foreground">狀態</th>
                   </tr>
@@ -151,6 +92,7 @@ export default function AtmPage() {
                 <tbody>
                   {withdrawals.map((w) => {
                     const statusInfo = atmStatusMap[w.status] || atmStatusMap.pending;
+                    const isCodeVisible = showCode[w.id];
                     return (
                       <tr key={w.id} className="border-b border-border/30 hover:bg-secondary/30 transition-colors">
                         <td className="p-4 text-sm">
@@ -162,19 +104,41 @@ export default function AtmPage() {
                         <td className="p-4 text-sm font-semibold text-right">
                           ${w.amount}
                         </td>
-                        <td className="p-4 text-sm text-right text-muted-foreground">
-                          {w.fee && parseFloat(String(w.fee)) > 0 ? `$${w.fee}` : "-"}
-                        </td>
                         <td className="p-4 text-center">
                           {w.activationCode ? (
-                            <div className="flex items-center justify-center gap-1">
-                              <code className="text-sm font-mono bg-secondary/50 px-2 py-0.5 rounded">{w.activationCode}</code>
-                              <Button variant="ghost" size="sm" className="h-6 w-6 p-0" onClick={() => copyToClipboard(w.activationCode!)}>
+                            <div className="flex items-center justify-center gap-2">
+                              <code className={`text-sm font-mono px-2 py-1 rounded transition-all ${
+                                isCodeVisible 
+                                  ? "bg-secondary/50" 
+                                  : "bg-secondary/30"
+                              }`}>
+                                {isCodeVisible ? w.activationCode : "••••••"}
+                              </code>
+                              <Button 
+                                variant="ghost" 
+                                size="sm" 
+                                className="h-6 w-6 p-0" 
+                                onClick={() => setShowCode((p) => ({ ...p, [w.id]: !p[w.id] }))}
+                              >
+                                {isCodeVisible ? (
+                                  <EyeOff className="h-3 w-3" />
+                                ) : (
+                                  <Eye className="h-3 w-3" />
+                                )}
+                              </Button>
+                              <Button 
+                                variant="ghost" 
+                                size="sm" 
+                                className="h-6 w-6 p-0" 
+                                onClick={() => copyToClipboard(w.activationCode!)}
+                              >
                                 <Copy className="h-3 w-3" />
                               </Button>
                             </div>
                           ) : (
-                            <span className="text-muted-foreground text-sm">-</span>
+                            <span className="text-muted-foreground text-sm">
+                              {w.status === "pending" ? "待生成" : "-"}
+                            </span>
                           )}
                         </td>
                         <td className="p-4 text-center">

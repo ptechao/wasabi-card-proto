@@ -1,0 +1,174 @@
+{
+  "common": {
+    "login": "登入",
+    "logout": "登出",
+    "loading": "加载中...",
+    "error": "错误",
+    "success": "成功",
+    "cancel": "取消",
+    "confirm": "确认",
+    "save": "保存",
+    "delete": "删除",
+    "edit": "编辑",
+    "copy": "复制",
+    "copied": "已复制到剪贴板",
+    "back": "返回"
+  },
+  "navigation": {
+    "dashboard": "总览",
+    "kyc": "KYC 认证",
+    "cards": "卡片管理",
+    "recharge": "充值",
+    "transactions": "交易记录",
+    "atm": "ATM 提现"
+  },
+  "dashboard": {
+    "title": "欢迎回来",
+    "subtitle": "管理您的虚拟卡片与资金",
+    "totalBalance": "总余额",
+    "activeCards": "活跃卡片",
+    "kycStatus": "KYC 状态",
+    "frozenCards": "冻结卡片",
+    "recentTransactions": "最近交易",
+    "viewAll": "查看全部",
+    "noTransactions": "暂无交易记录"
+  },
+  "kyc": {
+    "title": "KYC 身份认证",
+    "subtitle": "请填写您的个人资料以完成身份认证",
+    "status": {
+      "none": "未申请",
+      "pending": "待提交",
+      "submitted": "审核中",
+      "approved": "已通过",
+      "rejected": "已拒绝"
+    },
+    "form": {
+      "firstName": "名字 (First Name)",
+      "lastName": "姓氏 (Last Name)",
+      "dob": "出生日期",
+      "nationality": "国籍",
+      "mobileAreaCode": "手机区号",
+      "mobilePhone": "手机号码",
+      "email": "Email",
+      "address": "地址",
+      "city": "城市",
+      "state": "州/省",
+      "postalCode": "邮递区号",
+      "idType": "证件类型",
+      "idNumber": "证件号码",
+      "personalInfo": "个人资料",
+      "addressInfo": "地址信息",
+      "idInfo": "证件信息",
+      "required": "所有标记 * 的字段为必填",
+      "submit": "提交 KYC 申请",
+      "submitting": "提交中..."
+    }
+  },
+  "cards": {
+    "title": "卡片管理",
+    "subtitle": "管理您的虚拟卡片",
+    "issue": "开卡",
+    "issueNew": "申请新卡片",
+    "selectCardType": "选择卡片类型",
+    "initialAmount": "初始充值金额 (USD)",
+    "accountId": "扣款账户 ID",
+    "confirm": "确认开卡",
+    "confirming": "处理中...",
+    "freeze": "冻结",
+    "unfreeze": "解冻",
+    "cardInfo": "卡片信息",
+    "hide": "隐藏",
+    "show": "显示",
+    "availableBalance": "可用余额",
+    "cardType": "类型",
+    "cardNumber": "卡号",
+    "cvv": "CVV",
+    "expireDate": "有效期",
+    "noCards": "您尚未拥有任何卡片",
+    "issueCard": "点击「开卡」按钮申请您的第一张虚拟卡",
+    "status": {
+      "pending": "处理中",
+      "active": "活跃",
+      "frozen": "已冻结",
+      "cancelled": "已注销"
+    }
+  },
+  "recharge": {
+    "title": "充值",
+    "subtitle": "为您的卡片充值",
+    "depositAddress": "入金地址",
+    "chain": "区块链",
+    "amount": "金额",
+    "getAddress": "获取地址",
+    "copy": "复制",
+    "rechargeHistory": "充值记录",
+    "selectCard": "选择卡片",
+    "rechargeAmount": "充值金额",
+    "rechargeCard": "充值卡片",
+    "recharging": "充值中...",
+    "noHistory": "暂无充值记录"
+  },
+  "transactions": {
+    "title": "交易记录",
+    "subtitle": "查看您的交易明细",
+    "type": {
+      "deposit": "充值",
+      "withdrawal": "提现",
+      "purchase": "消费",
+      "refund": "退款",
+      "fee": "手续费",
+      "create": "开卡"
+    },
+    "status": {
+      "pending": "待处理",
+      "success": "成功",
+      "failed": "失败"
+    },
+    "time": "时间",
+    "orderNo": "订单号",
+    "amount": "金额",
+    "fee": "手续费",
+    "status": "状态",
+    "description": "描述",
+    "noTransactions": "暂无交易记录"
+  },
+  "atm": {
+    "title": "ATM 提现管理",
+    "subtitle": "查看和管理您的 ATM 提现激活码",
+    "info": "提现激活码说明",
+    "infoText": [
+      "激活码是您在 ATM 机器上提现现金时所需的密码",
+      "每次提现申请系统会自动生成一个激活码",
+      "激活码通常在提现申请提交后 24 小时内生成",
+      "点击复制按钮可快速复制激活码到剪贴板"
+    ],
+    "requestTime": "申请时间",
+    "orderNo": "订单号",
+    "amount": "金额",
+    "activationCode": "激活码",
+    "status": "状态",
+    "show": "显示",
+    "hide": "隐藏",
+    "pending": "待生成",
+    "noRecords": "暂无提现记录",
+    "noRecordsDesc": "您的 ATM 提现申请将在此显示",
+    "status": {
+      "pending": "待处理",
+      "processing": "处理中",
+      "completed": "已完成",
+      "failed": "失败"
+    }
+  },
+  "errors": {
+    "required": "此字段为必填",
+    "invalidEmail": "请输入有效的 Email",
+    "invalidDate": "请输入有效的日期",
+    "invalidAmount": "请输入有效的金额",
+    "selectCard": "请选择卡片",
+    "kycNotApproved": "请先完成 KYC 认证",
+    "cardNotActive": "卡片尚未激活",
+    "insufficientBalance": "余额不足",
+    "networkError": "网络错误，请稍后重试"
+  }
+}

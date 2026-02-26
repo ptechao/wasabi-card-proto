@@ -11,8 +11,18 @@ import CardsPage from "./pages/CardsPage";
 import RechargePage from "./pages/RechargePage";
 import TransactionsPage from "./pages/TransactionsPage";
 import AtmPage from "./pages/AtmPage";
+import RegisterPage from "./pages/RegisterPage";
 
 function Router() {
+  return (
+    <Switch>
+      <Route path="/register" component={RegisterPage} />
+      <Route component={DashboardRouter} />
+    </Switch>
+  );
+}
+
+function DashboardRouter() {
   return (
     <DashboardLayout>
       <Switch>
@@ -32,7 +42,7 @@ function Router() {
 function App() {
   return (
     <ErrorBoundary>
-      <ThemeProvider defaultTheme="dark">
+      <ThemeProvider defaultTheme="light">
         <TooltipProvider>
           <Toaster />
           <Router />

@@ -1,0 +1,174 @@
+{
+  "common": {
+    "login": "Login",
+    "logout": "Logout",
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
+    "copy": "Copy",
+    "copied": "Copied to clipboard",
+    "back": "Back"
+  },
+  "navigation": {
+    "dashboard": "Dashboard",
+    "kyc": "KYC Verification",
+    "cards": "Card Management",
+    "recharge": "Recharge",
+    "transactions": "Transactions",
+    "atm": "ATM Withdrawal"
+  },
+  "dashboard": {
+    "title": "Welcome Back",
+    "subtitle": "Manage your virtual cards and funds",
+    "totalBalance": "Total Balance",
+    "activeCards": "Active Cards",
+    "kycStatus": "KYC Status",
+    "frozenCards": "Frozen Cards",
+    "recentTransactions": "Recent Transactions",
+    "viewAll": "View All",
+    "noTransactions": "No transactions yet"
+  },
+  "kyc": {
+    "title": "KYC Identity Verification",
+    "subtitle": "Please fill in your personal information to complete identity verification",
+    "status": {
+      "none": "Not Applied",
+      "pending": "Pending Submission",
+      "submitted": "Under Review",
+      "approved": "Approved",
+      "rejected": "Rejected"
+    },
+    "form": {
+      "firstName": "First Name",
+      "lastName": "Last Name",
+      "dob": "Date of Birth",
+      "nationality": "Nationality",
+      "mobileAreaCode": "Mobile Area Code",
+      "mobilePhone": "Mobile Phone",
+      "email": "Email",
+      "address": "Address",
+      "city": "City",
+      "state": "State/Province",
+      "postalCode": "Postal Code",
+      "idType": "ID Type",
+      "idNumber": "ID Number",
+      "personalInfo": "Personal Information",
+      "addressInfo": "Address Information",
+      "idInfo": "ID Information",
+      "required": "All fields marked * are required",
+      "submit": "Submit KYC Application",
+      "submitting": "Submitting..."
+    }
+  },
+  "cards": {
+    "title": "Card Management",
+    "subtitle": "Manage your virtual cards",
+    "issue": "Issue Card",
+    "issueNew": "Request New Card",
+    "selectCardType": "Select Card Type",
+    "initialAmount": "Initial Recharge Amount (USD)",
+    "accountId": "Account ID for Deduction",
+    "confirm": "Confirm Card Issuance",
+    "confirming": "Processing...",
+    "freeze": "Freeze",
+    "unfreeze": "Unfreeze",
+    "cardInfo": "Card Information",
+    "hide": "Hide",
+    "show": "Show",
+    "availableBalance": "Available Balance",
+    "cardType": "Type",
+    "cardNumber": "Card Number",
+    "cvv": "CVV",
+    "expireDate": "Expiration Date",
+    "noCards": "You don't have any cards yet",
+    "issueCard": "Click the \"Issue Card\" button to request your first virtual card",
+    "status": {
+      "pending": "Processing",
+      "active": "Active",
+      "frozen": "Frozen",
+      "cancelled": "Cancelled"
+    }
+  },
+  "recharge": {
+    "title": "Recharge",
+    "subtitle": "Recharge your cards",
+    "depositAddress": "Deposit Address",
+    "chain": "Blockchain",
+    "amount": "Amount",
+    "getAddress": "Get Address",
+    "copy": "Copy",
+    "rechargeHistory": "Recharge History",
+    "selectCard": "Select Card",
+    "rechargeAmount": "Recharge Amount",
+    "rechargeCard": "Recharge Card",
+    "recharging": "Recharging...",
+    "noHistory": "No recharge history"
+  },
+  "transactions": {
+    "title": "Transaction History",
+    "subtitle": "View your transaction details",
+    "type": {
+      "deposit": "Deposit",
+      "withdrawal": "Withdrawal",
+      "purchase": "Purchase",
+      "refund": "Refund",
+      "fee": "Fee",
+      "create": "Card Issuance"
+    },
+    "status": {
+      "pending": "Pending",
+      "success": "Success",
+      "failed": "Failed"
+    },
+    "time": "Time",
+    "orderNo": "Order No.",
+    "amount": "Amount",
+    "fee": "Fee",
+    "status": "Status",
+    "description": "Description",
+    "noTransactions": "No transactions yet"
+  },
+  "atm": {
+    "title": "ATM Withdrawal Management",
+    "subtitle": "View and manage your ATM withdrawal activation codes",
+    "info": "ATM Activation Code Information",
+    "infoText": [
+      "The activation code is the password you need to withdraw cash from an ATM machine",
+      "The system will automatically generate an activation code for each withdrawal request",
+      "The activation code is typically generated within 24 hours after the withdrawal request is submitted",
+      "Click the copy button to quickly copy the activation code to your clipboard"
+    ],
+    "requestTime": "Request Time",
+    "orderNo": "Order No.",
+    "amount": "Amount",
+    "activationCode": "Activation Code",
+    "status": "Status",
+    "show": "Show",
+    "hide": "Hide",
+    "pending": "Pending Generation",
+    "noRecords": "No withdrawal records",
+    "noRecordsDesc": "Your ATM withdrawal requests will appear here",
+    "status": {
+      "pending": "Pending",
+      "processing": "Processing",
+      "completed": "Completed",
+      "failed": "Failed"
+    }
+  },
+  "errors": {
+    "required": "This field is required",
+    "invalidEmail": "Please enter a valid email",
+    "invalidDate": "Please enter a valid date",
+    "invalidAmount": "Please enter a valid amount",
+    "selectCard": "Please select a card",
+    "kycNotApproved": "Please complete KYC verification first",
+    "cardNotActive": "Card is not yet activated",
+    "insufficientBalance": "Insufficient balance",
+    "networkError": "Network error, please try again later"
+  }
+}

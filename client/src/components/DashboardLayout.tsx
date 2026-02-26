@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/sidebar";
 import { getLoginUrl } from "@/const";
 import { useIsMobile } from "@/hooks/useMobile";
+import { useLanguage } from "@/i18n/useLanguage";
 import {
   LayoutDashboard,
   CreditCard,
@@ -30,6 +31,7 @@ import {
   Landmark,
   LogOut,
   PanelLeft,
+  Globe,
 } from "lucide-react";
 import { CSSProperties, useEffect, useRef, useState } from "react";
 import { useLocation } from "wouter";
@@ -70,32 +72,7 @@ export default function DashboardLayout({
   }
 
   if (!user) {
-    return (
-      <div className="flex items-center justify-center min-h-screen bg-background">
-        <div className="flex flex-col items-center gap-8 p-8 max-w-md w-full">
-          <div className="flex flex-col items-center gap-4">
-            <div className="h-16 w-16 rounded-2xl bg-primary/10 flex items-center justify-center">
-              <CreditCard className="h-8 w-8 text-primary" />
-            </div>
-            <h1 className="text-2xl font-bold tracking-tight text-center text-foreground">
-              WasabiCard
-            </h1>
-            <p className="text-sm text-muted-foreground text-center max-w-sm">
-              USDT 虛擬卡管理平台 — 請登入以繼續
-            </p>
-          </div>
-          <Button
-            onClick={() => {
-              window.location.href = getLoginUrl();
-            }}
-            size="lg"
-            className="w-full shadow-lg hover:shadow-xl transition-all"
-          >
-            登入
-          </Button>
-        </div>
-      </div>
-    );
+    return <LoginPage />;
   }
 
   return (
@@ -110,6 +87,64 @@ export default function DashboardLayout({
         {children}
       </DashboardLayoutContent>
     </SidebarProvider>
+  );
+}
+
+function LoginPage() {
+  const [, setLocation] = useLocation();
+  return (
+    <div className="flex items-center justify-center min-h-screen bg-background">
+      <div className="flex flex-col items-center gap-8 p-8 max-w-md w-full">
+        <div className="flex flex-col items-center gap-4">
+          <div className="h-16 w-16 rounded-2xl bg-primary/10 flex items-center justify-center">
+            <CreditCard className="h-8 w-8 text-primary" />
+          </div>
+          <h1 className="text-2xl font-bold tracking-tight text-center text-foreground">
+            WasabiCard
+          </h1>
+          <p className="text-sm text-muted-foreground text-center max-w-sm">
+            USDT 虛擬卡管理平台 — 請登入以繼續
+          </p>
+        </div>
+        <div className="space-y-3 w-full">
+          <Button
+            onClick={() => {
+              window.location.href = getLoginUrl();
+            }}
+            size="lg"
+            className="w-full shadow-lg hover:shadow-xl transition-all font-semibold"
+          >
+            使用 Manus 登入
+          </Button>
+          <Button
+            onClick={() => setLocation('/register')}
+            variant="outline"
+            size="lg"
+            className="w-full border-2 font-semibold"
+          >
+            使用 Email 註冊
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function LanguageSwitcher() {
+  const { currentLanguage, changeLanguage, languages } = useLanguage();
+  return (
+    <>
+      {languages.map((lang) => (
+        <DropdownMenuItem
+          key={lang.code}
+          onClick={() => changeLanguage(lang.code)}
+          className={`cursor-pointer ${currentLanguage === lang.code ? 'bg-accent' : ''}`}
+        >
+          <Globe className="mr-2 h-4 w-4" />
+          <span>{lang.name}</span>
+        </DropdownMenuItem>
+      ))}
+    </>
   );
 }
 
@@ -233,6 +268,7 @@ function DashboardLayoutContent({
                 </button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-48">
+                <LanguageSwitcher />
                 <DropdownMenuItem
                   onClick={logout}
                   className="cursor-pointer text-destructive focus:text-destructive"

@@ -1,0 +1,174 @@
+{
+  "common": {
+    "login": "ログイン",
+    "logout": "ログアウト",
+    "loading": "読み込み中...",
+    "error": "エラー",
+    "success": "成功",
+    "cancel": "キャンセル",
+    "confirm": "確認",
+    "save": "保存",
+    "delete": "削除",
+    "edit": "編集",
+    "copy": "コピー",
+    "copied": "クリップボードにコピーしました",
+    "back": "戻る"
+  },
+  "navigation": {
+    "dashboard": "ダッシュボード",
+    "kyc": "KYC認証",
+    "cards": "カード管理",
+    "recharge": "チャージ",
+    "transactions": "取引履歴",
+    "atm": "ATM出金"
+  },
+  "dashboard": {
+    "title": "おかえりなさい",
+    "subtitle": "仮想カードと資金を管理する",
+    "totalBalance": "総残高",
+    "activeCards": "アクティブなカード",
+    "kycStatus": "KYCステータス",
+    "frozenCards": "凍結されたカード",
+    "recentTransactions": "最近の取引",
+    "viewAll": "すべて表示",
+    "noTransactions": "取引履歴がありません"
+  },
+  "kyc": {
+    "title": "KYC本人確認",
+    "subtitle": "本人確認を完了するため、個人情報を入力してください",
+    "status": {
+      "none": "未申請",
+      "pending": "提出待ち",
+      "submitted": "審査中",
+      "approved": "承認済み",
+      "rejected": "却下"
+    },
+    "form": {
+      "firstName": "名前",
+      "lastName": "姓",
+      "dob": "生年月日",
+      "nationality": "国籍",
+      "mobileAreaCode": "携帯電話市外局番",
+      "mobilePhone": "携帯電話番号",
+      "email": "メール",
+      "address": "住所",
+      "city": "市区町村",
+      "state": "都道府県",
+      "postalCode": "郵便番号",
+      "idType": "身分証明書の種類",
+      "idNumber": "身分証明書番号",
+      "personalInfo": "個人情報",
+      "addressInfo": "住所情報",
+      "idInfo": "身分証明書情報",
+      "required": "* が付いているすべてのフィールドは必須です",
+      "submit": "KYC申請を提出",
+      "submitting": "提出中..."
+    }
+  },
+  "cards": {
+    "title": "カード管理",
+    "subtitle": "仮想カードを管理する",
+    "issue": "カード発行",
+    "issueNew": "新しいカードをリクエスト",
+    "selectCardType": "カードタイプを選択",
+    "initialAmount": "初期チャージ金額 (USD)",
+    "accountId": "引き落とし口座ID",
+    "confirm": "カード発行を確認",
+    "confirming": "処理中...",
+    "freeze": "凍結",
+    "unfreeze": "凍結解除",
+    "cardInfo": "カード情報",
+    "hide": "非表示",
+    "show": "表示",
+    "availableBalance": "利用可能残高",
+    "cardType": "タイプ",
+    "cardNumber": "カード番号",
+    "cvv": "CVV",
+    "expireDate": "有効期限",
+    "noCards": "まだカードをお持ちではありません",
+    "issueCard": "「カード発行」ボタンをクリックして最初の仮想カードをリクエストしてください",
+    "status": {
+      "pending": "処理中",
+      "active": "アクティブ",
+      "frozen": "凍結",
+      "cancelled": "キャンセル済み"
+    }
+  },
+  "recharge": {
+    "title": "チャージ",
+    "subtitle": "カードをチャージする",
+    "depositAddress": "入金アドレス",
+    "chain": "ブロックチェーン",
+    "amount": "金額",
+    "getAddress": "アドレスを取得",
+    "copy": "コピー",
+    "rechargeHistory": "チャージ履歴",
+    "selectCard": "カードを選択",
+    "rechargeAmount": "チャージ金額",
+    "rechargeCard": "カードをチャージ",
+    "recharging": "チャージ中...",
+    "noHistory": "チャージ履歴がありません"
+  },
+  "transactions": {
+    "title": "取引履歴",
+    "subtitle": "取引の詳細を表示",
+    "type": {
+      "deposit": "入金",
+      "withdrawal": "出金",
+      "purchase": "購入",
+      "refund": "払い戻し",
+      "fee": "手数料",
+      "create": "カード発行"
+    },
+    "status": {
+      "pending": "保留中",
+      "success": "成功",
+      "failed": "失敗"
+    },
+    "time": "時間",
+    "orderNo": "注文番号",
+    "amount": "金額",
+    "fee": "手数料",
+    "status": "ステータス",
+    "description": "説明",
+    "noTransactions": "取引履歴がありません"
+  },
+  "atm": {
+    "title": "ATM出金管理",
+    "subtitle": "ATM出金アクティベーションコードを表示・管理する",
+    "info": "ATMアクティベーションコード情報",
+    "infoText": [
+      "アクティベーションコードはATM機から現金を引き出すときに必要なパスワードです",
+      "出金リクエストごとにシステムが自動的にアクティベーションコードを生成します",
+      "アクティベーションコードは通常、出金リクエスト提出後24時間以内に生成されます",
+      "コピーボタンをクリックしてアクティベーションコードをクリップボードにすばやくコピーできます"
+    ],
+    "requestTime": "リクエスト時間",
+    "orderNo": "注文番号",
+    "amount": "金額",
+    "activationCode": "アクティベーションコード",
+    "status": "ステータス",
+    "show": "表示",
+    "hide": "非表示",
+    "pending": "生成待ち",
+    "noRecords": "出金記録がありません",
+    "noRecordsDesc": "ATM出金リクエストはここに表示されます",
+    "status": {
+      "pending": "保留中",
+      "processing": "処理中",
+      "completed": "完了",
+      "failed": "失敗"
+    }
+  },
+  "errors": {
+    "required": "このフィールドは必須です",
+    "invalidEmail": "有効なメールアドレスを入力してください",
+    "invalidDate": "有効な日付を入力してください",
+    "invalidAmount": "有効な金額を入力してください",
+    "selectCard": "カードを選択してください",
+    "kycNotApproved": "先にKYC認証を完了してください",
+    "cardNotActive": "カードはまだアクティブ化されていません",
+    "insufficientBalance": "残高不足",
+    "networkError": "ネットワークエラー。後でもう一度お試しください"
+  }
+}

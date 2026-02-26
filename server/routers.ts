@@ -16,6 +16,21 @@ export const appRouter = router({
       ctx.res.clearCookie(COOKIE_NAME, { ...cookieOptions, maxAge: -1 });
       return { success: true } as const;
     }),
+    registerWithEmail: publicProcedure
+      .input(z.object({
+        email: z.string().email(),
+        password: z.string().min(6),
+        firstName: z.string().min(1),
+        lastName: z.string().optional(),
+      }))
+      .mutation(async ({ input }) => {
+        console.log(`[Mock] Email registration: ${input.email}`);
+        return {
+          success: true,
+          message: "Registration successful! Please login with Manus OAuth",
+          email: input.email,
+        };
+      }),
   }),
 
   // ============================================================
@@ -409,30 +424,6 @@ export const appRouter = router({
   // ATM 提領管理
   // ============================================================
   atm: router({
-    requestWithdrawal: protectedProcedure
-      .input(z.object({
-        cardId: z.number(),
-        amount: z.number().min(1),
-      }))
-      .mutation(async ({ ctx, input }) => {
-        const card = await db.getCardById(input.cardId, ctx.user.id);
-        if (!card) throw new TRPCError({ code: "NOT_FOUND", message: "卡片不存在" });
-        if (!card.wasabiCardNo) throw new TRPCError({ code: "BAD_REQUEST", message: "卡片尚未激活" });
-
-        const merchantOrderNo = wasabi.generateMerchantOrderNo("ATM");
-
-        const withdrawal = await db.createAtmWithdrawal({
-          userId: ctx.user.id,
-          cardId: card.id,
-          merchantOrderNo,
-          amount: String(input.amount),
-          status: "pending",
-          description: `ATM 提領 $${input.amount}`,
-        });
-
-        return { success: true, withdrawal };
-      }),
-
     list: protectedProcedure
       .input(z.object({
         page: z.number().default(1),
@@ -454,6 +445,19 @@ export const appRouter = router({
         if (!card || !card.wasabiCardNo) return null;
         return db.getLatest3dsVerification(card.wasabiCardNo);
       }),
+  }),
+
+  i18n: router({
+    getLanguages: publicProcedure.query(() => {
+      return {
+        languages: [
+          { code: "zh-TW", name: "繁體中文" },
+          { code: "zh-CN", name: "簡體中文" },
+          { code: "en", name: "English" },
+          { code: "ja", name: "日本語" },
+        ],
+      };
+    }),
   }),
 });
 
