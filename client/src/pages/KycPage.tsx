@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ShieldCheck, CheckCircle2, Clock, XCircle, AlertCircle } from "lucide-react";
+import { ShieldCheck, CheckCircle2, Clock, XCircle, AlertCircle, Upload, Image as ImageIcon } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 
@@ -17,9 +17,16 @@ const kycStatusConfig: Record<string, { icon: React.ReactNode; label: string; co
   rejected: { icon: <XCircle className="h-6 w-6" />, label: "已拒絕", color: "text-red-500", description: "您的 KYC 申請被拒絕，請檢查資料後重新提交。" },
 };
 
+interface FileUpload {
+  id_front?: string;
+  id_back?: string;
+  selfie?: string;
+}
+
 export default function KycPage() {
   const { data: kycRecord, isLoading } = trpc.kyc.getStatus.useQuery();
   const submitMutation = trpc.kyc.submit.useMutation();
+  const uploadFileMutation = trpc.admin.files.uploadKycDocument.useMutation();
   const utils = trpc.useUtils();
 
   const [form, setForm] = useState({
@@ -38,8 +45,64 @@ export default function KycPage() {
     idNumber: "",
   });
 
+  const [uploadedFiles, setUploadedFiles] = useState<FileUpload>({});
+  const [uploadingFile, setUploadingFile] = useState<string | null>(null);
+
   const handleChange = (field: string, value: string) => {
     setForm((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>, documentType: "id_front" | "id_back" | "selfie") => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    // 驗證文件大小（最多 5MB）
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error("文件大小不能超過 5MB");
+      return;
+    }
+
+    // 驗證文件類型
+    if (!file.type.startsWith("image/")) {
+      toast.error("請上傳圖片文件");
+      return;
+    }
+
+    setUploadingFile(documentType);
+    try {
+      // 將文件轉換為 base64
+      const reader = new FileReader();
+      reader.onload = async (e) => {
+        const base64Data = (e.target?.result as string).split(",")[1];
+        if (!base64Data) {
+          toast.error("文件讀取失敗");
+          return;
+        }
+
+        try {
+          const result = await uploadFileMutation.mutateAsync({
+            fileName: file.name,
+            fileData: base64Data,
+            documentType,
+          });
+
+          setUploadedFiles((prev) => ({
+            ...prev,
+            [documentType]: result.url,
+          }));
+
+          toast.success("文件上傳成功");
+        } catch (error) {
+          toast.error(`上傳失敗: ${(error as Error).message}`);
+        } finally {
+          setUploadingFile(null);
+        }
+      };
+      reader.readAsDataURL(file);
+    } catch (error) {
+      toast.error("文件處理失敗");
+      setUploadingFile(null);
+    }
   };
 
   const handleSubmit = async () => {
@@ -237,7 +300,114 @@ export default function KycPage() {
         </CardContent>
       </Card>
 
-      <div className="flex justify-end">
+      <Card className="bg-card">
+        <CardHeader>
+          <CardTitle>文件上傳</CardTitle>
+          <CardDescription>請上傳您的身份證件照片和自拍照進行驗證</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {/* 身份證正面 */}
+            <div className="space-y-3">
+              <Label className="text-base font-medium">身份證正面</Label>
+              <div className="relative">
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => handleFileUpload(e, "id_front")}
+                  disabled={uploadingFile === "id_front"}
+                  className="hidden"
+                  id="id_front_input"
+                />
+                <label
+                  htmlFor="id_front_input"
+                  className="flex flex-col items-center justify-center w-full h-40 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors"
+                >
+                  {uploadedFiles.id_front ? (
+                    <div className="flex flex-col items-center justify-center w-full h-full">
+                      <ImageIcon className="h-8 w-8 text-green-500 mb-2" />
+                      <p className="text-sm text-green-600 font-medium">已上傳</p>
+                    </div>
+                  ) : (
+                    <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                      <Upload className="h-8 w-8 text-gray-400 mb-2" />
+                      <p className="text-sm text-gray-500">點擊上傳或拖拽</p>
+                      <p className="text-xs text-gray-400">PNG, JPG (最多 5MB)</p>
+                    </div>
+                  )}
+                </label>
+              </div>
+            </div>
+
+            {/* 身份證背面 */}
+            <div className="space-y-3">
+              <Label className="text-base font-medium">身份證背面</Label>
+              <div className="relative">
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => handleFileUpload(e, "id_back")}
+                  disabled={uploadingFile === "id_back"}
+                  className="hidden"
+                  id="id_back_input"
+                />
+                <label
+                  htmlFor="id_back_input"
+                  className="flex flex-col items-center justify-center w-full h-40 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors"
+                >
+                  {uploadedFiles.id_back ? (
+                    <div className="flex flex-col items-center justify-center w-full h-full">
+                      <ImageIcon className="h-8 w-8 text-green-500 mb-2" />
+                      <p className="text-sm text-green-600 font-medium">已上傳</p>
+                    </div>
+                  ) : (
+                    <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                      <Upload className="h-8 w-8 text-gray-400 mb-2" />
+                      <p className="text-sm text-gray-500">點擊上傳或拖拽</p>
+                      <p className="text-xs text-gray-400">PNG, JPG (最多 5MB)</p>
+                    </div>
+                  )}
+                </label>
+              </div>
+            </div>
+
+            {/* 自拍照 */}
+            <div className="space-y-3">
+              <Label className="text-base font-medium">自拍照</Label>
+              <div className="relative">
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => handleFileUpload(e, "selfie")}
+                  disabled={uploadingFile === "selfie"}
+                  className="hidden"
+                  id="selfie_input"
+                />
+                <label
+                  htmlFor="selfie_input"
+                  className="flex flex-col items-center justify-center w-full h-40 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors"
+                >
+                  {uploadedFiles.selfie ? (
+                    <div className="flex flex-col items-center justify-center w-full h-full">
+                      <ImageIcon className="h-8 w-8 text-green-500 mb-2" />
+                      <p className="text-sm text-green-600 font-medium">已上傳</p>
+                    </div>
+                  ) : (
+                    <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                      <Upload className="h-8 w-8 text-gray-400 mb-2" />
+                      <p className="text-sm text-gray-500">點擊上傳或拖拽</p>
+                      <p className="text-xs text-gray-400">PNG, JPG (最多 5MB)</p>
+                    </div>
+                  )}
+                </label>
+              </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      <div className="flex justify-end gap-3">
+        <Button variant="outline">取消</Button>
         <Button
           size="lg"
           onClick={handleSubmit}

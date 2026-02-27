@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Dialog,
   DialogContent,
@@ -12,7 +13,7 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
-import { Loader2, CheckCircle, XCircle } from "lucide-react";
+import { Loader2, CheckCircle, XCircle, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 
 const statusColors: Record<string, string> = {
@@ -34,6 +35,9 @@ export default function KycReviewPanel() {
   const [selectedKyc, setSelectedKyc] = useState<any>(null);
   const [rejectReason, setRejectReason] = useState("");
   const [showRejectDialog, setShowRejectDialog] = useState(false);
+  const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set());
+  const [batchRejectReason, setBatchRejectReason] = useState("");
+  const [showBatchRejectDialog, setShowBatchRejectDialog] = useState(false);
 
   const { data, isLoading, refetch } = trpc.admin.kyc.list.useQuery({
     status: selectedStatus,
@@ -65,6 +69,30 @@ export default function KycReviewPanel() {
     },
   });
 
+  const batchApproveMutation = trpc.admin.kyc.batchApprove.useMutation({
+    onSuccess: (result) => {
+      toast.success(result.message);
+      refetch();
+      setSelectedIds(new Set());
+    },
+    onError: (error) => {
+      toast.error(error.message);
+    },
+  });
+
+  const batchRejectMutation = trpc.admin.kyc.batchReject.useMutation({
+    onSuccess: (result) => {
+      toast.success(result.message);
+      refetch();
+      setSelectedIds(new Set());
+      setShowBatchRejectDialog(false);
+      setBatchRejectReason("");
+    },
+    onError: (error) => {
+      toast.error(error.message);
+    },
+  });
+
   const handleApprove = (id: number) => {
     approveMutation.mutate({ id });
   };
@@ -77,9 +105,47 @@ export default function KycReviewPanel() {
     rejectMutation.mutate({ id: selectedKyc.id, reason: rejectReason });
   };
 
+  const handleSelectAll = (checked: boolean) => {
+    if (checked && data?.records) {
+      setSelectedIds(new Set(data.records.map((r: any) => r.id)));
+    } else {
+      setSelectedIds(new Set());
+    }
+  };
+
+  const handleSelectId = (id: number, checked: boolean) => {
+    const newSet = new Set(selectedIds);
+    if (checked) {
+      newSet.add(id);
+    } else {
+      newSet.delete(id);
+    }
+    setSelectedIds(newSet);
+  };
+
+  const handleBatchApprove = () => {
+    if (selectedIds.size === 0) {
+      toast.error("請選擇至少一個申請");
+      return;
+    }
+    batchApproveMutation.mutate({ ids: Array.from(selectedIds) });
+  };
+
+  const handleBatchReject = () => {
+    if (selectedIds.size === 0) {
+      toast.error("請選擇至少一個申請");
+      return;
+    }
+    if (!batchRejectReason.trim()) {
+      toast.error("請輸入拒絕原因");
+      return;
+    }
+    batchRejectMutation.mutate({ ids: Array.from(selectedIds), reason: batchRejectReason });
+  };
+
   return (
     <div className="space-y-4">
-      <div className="flex gap-2">
+      <div className="flex gap-2 flex-wrap">
         {["pending", "submitted", "approved", "rejected"].map((status) => (
           <Button
             key={status}
@@ -91,21 +157,82 @@ export default function KycReviewPanel() {
         ))}
       </div>
 
+      {/* 批量操作工具欄 */}
+      {selectedIds.size > 0 && (
+        <Card className="bg-blue-50 border-blue-200">
+          <CardContent className="pt-6">
+            <div className="flex items-center justify-between">
+              <p className="text-sm font-medium">已選擇 {selectedIds.size} 個申請</p>
+              <div className="flex gap-2">
+                <Button
+                  size="sm"
+                  onClick={handleBatchApprove}
+                  disabled={batchApproveMutation.isPending}
+                >
+                  <CheckCircle className="w-4 h-4 mr-2" />
+                  批量批准
+                </Button>
+                <Button
+                  size="sm"
+                  variant="destructive"
+                  onClick={() => setShowBatchRejectDialog(true)}
+                  disabled={batchRejectMutation.isPending}
+                >
+                  <XCircle className="w-4 h-4 mr-2" />
+                  批量拒絕
+                </Button>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => setSelectedIds(new Set())}
+                >
+                  取消選擇
+                </Button>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
       {isLoading ? (
         <div className="flex items-center justify-center py-8">
           <Loader2 className="h-6 w-6 animate-spin" />
         </div>
       ) : (
         <div className="grid gap-4">
+          {/* 全選複選框 */}
+          {data?.records && data.records.length > 0 && (
+            <div className="flex items-center gap-2 p-3 bg-gray-50 rounded border">
+              <Checkbox
+                checked={selectedIds.size === data.records.length && data.records.length > 0}
+                onCheckedChange={(checked) => handleSelectAll(checked as boolean)}
+              />
+              <span className="text-sm font-medium">全選此頁</span>
+            </div>
+          )}
+
           {data?.records.map((kyc: any) => (
-            <Card key={kyc.id} className="cursor-pointer hover:shadow-lg transition-shadow" onClick={() => setSelectedKyc(kyc)}>
+            <Card
+              key={kyc.id}
+              className="cursor-pointer hover:shadow-lg transition-shadow"
+              onClick={() => setSelectedKyc(kyc)}
+            >
               <CardHeader>
                 <div className="flex items-center justify-between">
-                  <div>
-                    <CardTitle className="text-lg">
-                      {kyc.firstName} {kyc.lastName}
-                    </CardTitle>
-                    <p className="text-sm text-muted-foreground mt-1">{kyc.email}</p>
+                  <div className="flex items-center gap-3 flex-1">
+                    <Checkbox
+                      checked={selectedIds.has(kyc.id)}
+                      onCheckedChange={(checked) => {
+                        handleSelectId(kyc.id, checked as boolean);
+                      }}
+                      onClick={(e) => e.stopPropagation()}
+                    />
+                    <div>
+                      <CardTitle className="text-lg">
+                        {kyc.firstName} {kyc.lastName}
+                      </CardTitle>
+                      <p className="text-sm text-muted-foreground mt-1">{kyc.email}</p>
+                    </div>
                   </div>
                   <Badge className={statusColors[kyc.status]}>
                     {statusLabels[kyc.status]}
@@ -265,6 +392,39 @@ export default function KycReviewPanel() {
               disabled={rejectMutation.isPending}
             >
               {rejectMutation.isPending && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
+              確認拒絕
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* 批量拒絕對話框 */}
+      <Dialog open={showBatchRejectDialog} onOpenChange={setShowBatchRejectDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>批量拒絕 KYC</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <p className="text-sm text-muted-foreground">
+              將拒絕 {selectedIds.size} 個申請，請提供統一的拒絕原因
+            </p>
+            <Textarea
+              placeholder="輸入拒絕原因..."
+              value={batchRejectReason}
+              onChange={(e) => setBatchRejectReason(e.target.value)}
+              rows={4}
+            />
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowBatchRejectDialog(false)}>
+              取消
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={handleBatchReject}
+              disabled={batchRejectMutation.isPending}
+            >
+              {batchRejectMutation.isPending && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
               確認拒絕
             </Button>
           </DialogFooter>
