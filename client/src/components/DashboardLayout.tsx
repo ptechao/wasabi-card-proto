@@ -33,6 +33,7 @@ import {
   PanelLeft,
   Globe,
   Settings,
+  BarChart3,
 } from "lucide-react";
 import { CSSProperties, useEffect, useRef, useState } from "react";
 import { useLocation } from "wouter";
@@ -46,6 +47,11 @@ const menuItems = [
   { icon: Wallet, label: "充值", path: "/recharge" },
   { icon: ArrowDownUp, label: "交易記錄", path: "/transactions" },
   { icon: Landmark, label: "ATM 提領", path: "/atm" },
+];
+
+const adminMenuItems = [
+  { icon: Settings, label: "管理後台", path: "/admin" },
+  { icon: ShieldCheck, label: "審核日誌", path: "/audit-logs" },
 ];
 
 const SIDEBAR_WIDTH_KEY = "sidebar-width";
@@ -246,6 +252,29 @@ function DashboardLayoutContent({
                   </SidebarMenuItem>
                 );
               })}
+              {user?.role === "admin" && (
+                <>
+                  <div className="my-2 border-t" />
+                  {adminMenuItems.map((item) => {
+                    const isActive = location === item.path;
+                    return (
+                      <SidebarMenuItem key={item.path}>
+                        <SidebarMenuButton
+                          isActive={isActive}
+                          onClick={() => setLocation(item.path)}
+                          tooltip={item.label}
+                          className="h-10 transition-all font-normal"
+                        >
+                          <item.icon
+                            className={`h-4 w-4 ${isActive ? "text-primary" : ""}`}
+                          />
+                          <span>{item.label}</span>
+                        </SidebarMenuButton>
+                      </SidebarMenuItem>
+                    );
+                  })}
+                </>
+              )}
             </SidebarMenu>
           </SidebarContent>
 

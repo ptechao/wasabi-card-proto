@@ -198,3 +198,28 @@ export const atmWithdrawals = mysqlTable("atm_withdrawals", {
 
 export type AtmWithdrawal = typeof atmWithdrawals.$inferSelect;
 export type InsertAtmWithdrawal = typeof atmWithdrawals.$inferInsert;
+
+/**
+ * KYC 審核日誌表 - 記錄所有 KYC 操作歷史
+ */
+export const kycAuditLogs = mysqlTable("kyc_audit_logs", {
+  id: int("id").autoincrement().primaryKey(),
+  /** 關聯的 KYC 記錄 ID */
+  kycId: int("kycId").notNull(),
+  /** 操作者（管理員）ID */
+  operatorId: int("operatorId").notNull(),
+  /** 操作類型: submit, approve, reject, resubmit */
+  actionType: mysqlEnum("actionType", ["submit", "approve", "reject", "resubmit"]).notNull(),
+  /** 操作前的狀態 */
+  previousStatus: mysqlEnum("previousStatus", ["pending", "submitted", "approved", "rejected"]),
+  /** 操作後的狀態 */
+  newStatus: mysqlEnum("newStatus", ["pending", "submitted", "approved", "rejected"]).notNull(),
+  /** 操作備註（如拒絕原因） */
+  notes: text("notes"),
+  /** 操作者名稱（冗餘存儲便於查詢） */
+  operatorName: varchar("operatorName", { length: 128 }),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type KycAuditLog = typeof kycAuditLogs.$inferSelect;
+export type InsertKycAuditLog = typeof kycAuditLogs.$inferInsert;

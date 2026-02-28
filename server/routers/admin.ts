@@ -117,6 +117,37 @@ export const adminRouter = router({
       }),
   }),
 
+  // 審核日誌與統計
+  auditLogs: router({
+    list: protectedProcedure
+      .input(z.object({
+        kycId: z.number().optional(),
+        operatorId: z.number().optional(),
+        page: z.number().default(1),
+        pageSize: z.number().default(20),
+      }))
+      .query(async ({ ctx, input }) => {
+        if (ctx.user.role !== "admin") throw new TRPCError({ code: "FORBIDDEN", message: "只有管理員可以訪問" });
+        return db.getKycAuditLogs(input.kycId, input.operatorId, input.page, input.pageSize);
+      }),
+
+    statistics: protectedProcedure
+      .query(async ({ ctx }) => {
+        if (ctx.user.role !== "admin") throw new TRPCError({ code: "FORBIDDEN", message: "只有管理員可以訪問" });
+        return db.getKycStatistics();
+      }),
+
+    reviewerPerformance: protectedProcedure
+      .input(z.object({
+        page: z.number().default(1),
+        pageSize: z.number().default(20),
+      }))
+      .query(async ({ ctx, input }) => {
+        if (ctx.user.role !== "admin") throw new TRPCError({ code: "FORBIDDEN", message: "只有管理員可以訪問" });
+        return db.getReviewerPerformance(input.page, input.pageSize);
+      }),
+  }),
+
   // 文件上傳
   files: router({
     uploadKycDocument: protectedProcedure

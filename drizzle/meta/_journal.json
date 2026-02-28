@@ -15,6 +15,13 @@
       "when": 1771951235064,
       "tag": "0001_curious_mulholland_black",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1772302758771,
+      "tag": "0002_gifted_sebastian_shaw",
+      "breakpoints": true
     }
   ]
 }

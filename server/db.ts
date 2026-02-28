@@ -337,3 +337,102 @@ export async function getUserKycHistory(userId: number) {
   if (!db) throw new Error("Database not available");
   return db.select().from(kycRecords).where(eq(kycRecords.userId, userId)).orderBy(desc(kycRecords.createdAt));
 }
+
+// ============================================================
+// KYC Audit Log helpers
+// ============================================================
+export async function createKycAuditLog(data: any) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  const { kycAuditLogs } = await import("../drizzle/schema");
+  await db.insert(kycAuditLogs).values(data);
+}
+
+export async function getKycAuditLogs(kycId?: number, operatorId?: number, page: number = 1, pageSize: number = 20) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  const { kycAuditLogs } = await import("../drizzle/schema");
+  const { and, eq } = await import("drizzle-orm");
+  
+  const offset = (page - 1) * pageSize;
+  const conditions = [];
+  
+  if (kycId) conditions.push(eq(kycAuditLogs.kycId, kycId));
+  if (operatorId) conditions.push(eq(kycAuditLogs.operatorId, operatorId));
+  
+  const whereCondition = conditions.length > 0 ? and(...conditions) : undefined;
+  
+  const records = await db.select().from(kycAuditLogs)
+    .where(whereCondition)
+    .orderBy(desc(kycAuditLogs.createdAt))
+    .limit(pageSize)
+    .offset(offset);
+  
+  const countResult = await db.select({ count: sql<number>`count(*)` })
+    .from(kycAuditLogs)
+    .where(whereCondition);
+  
+  return { records, total: countResult[0]?.count || 0 };
+}
+
+// 獲取 KYC 統計數據
+export async function getKycStatistics() {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  const totalResult = await db.select({ count: sql<number>`count(*)` }).from(kycRecords);
+  const pendingResult = await db.select({ count: sql<number>`count(*)` }).from(kycRecords).where(eq(kycRecords.status, "pending"));
+  const submittedResult = await db.select({ count: sql<number>`count(*)` }).from(kycRecords).where(eq(kycRecords.status, "submitted"));
+  const approvedResult = await db.select({ count: sql<number>`count(*)` }).from(kycRecords).where(eq(kycRecords.status, "approved"));
+  const rejectedResult = await db.select({ count: sql<number>`count(*)` }).from(kycRecords).where(eq(kycRecords.status, "rejected"));
+  
+  const total = totalResult[0]?.count || 0;
+  const pending = pendingResult[0]?.count || 0;
+  const submitted = submittedResult[0]?.count || 0;
+  const approved = approvedResult[0]?.count || 0;
+  const rejected = rejectedResult[0]?.count || 0;
+  
+  return {
+    total,
+    pending,
+    submitted,
+    approved,
+    rejected,
+    approvalRate: total > 0 ? ((approved / total) * 100).toFixed(2) : "0.00",
+  };
+}
+
+// 獲取審核者績效分析
+export async function getReviewerPerformance(page: number = 1, pageSize: number = 20) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  const { kycAuditLogs } = await import("../drizzle/schema");
+  const { sql: sqlFunc } = await import("drizzle-orm");
+  
+  const offset = (page - 1) * pageSize;
+  
+  // 按操作者分組統計
+  const records = await db.select({
+    operatorId: kycAuditLogs.operatorId,
+    operatorName: kycAuditLogs.operatorName,
+    totalActions: sqlFunc<number>`count(*)`,
+    approvals: sqlFunc<number>`sum(case when actionType = 'approve' then 1 else 0 end)`,
+    rejections: sqlFunc<number>`sum(case when actionType = 'reject' then 1 else 0 end)`,
+  })
+    .from(kycAuditLogs)
+    .groupBy(kycAuditLogs.operatorId, kycAuditLogs.operatorName)
+    .orderBy(desc(sqlFunc<number>`count(*)`))
+    .limit(pageSize)
+    .offset(offset);
+  
+  // 計算總數
+  const countResult = await db.select({ count: sqlFunc<number>`count(distinct operatorId)` }).from(kycAuditLogs);
+  
+  return {
+    records: records.map(r => ({
+      ...r,
+      approvalRate: r.totalActions > 0 ? (((r.approvals || 0) / r.totalActions) * 100).toFixed(2) : "0.00",
+    })),
+    total: countResult[0]?.count || 0,
+  };
+}
